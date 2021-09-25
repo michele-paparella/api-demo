@@ -1,5 +1,6 @@
 // get the client
 const mysql = require('mysql2');
+var _ = require('underscore');
 
 class Facade {
 
@@ -20,10 +21,72 @@ class Facade {
 
     loadJobs(onResult) {
         // For pool initialization, see above
-        this.pool.query("SELECT * FROM job", function(err, rows, fields) {
+        this.pool.query("SELECT * FROM job", function (err, rows, fields) {
             // Connection is automatically released when query resolves
             onResult(rows, fields);
         });
+    }
+
+    /**
+     * creare un project che contenga un array di job (almeno uno al momento della creazione)
+     */
+    insertNewProject(title, jobs, onResult) {
+        //TODO save project
+        var promises = [];
+        promises.push(new Promise((resolve, reject) => {
+            this.pool.execute(
+                'INSERT INTO `api-demo`.`project`(`title`) VALUES (?);',
+                [title],
+                function (error, result, fields) {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                    } else {
+                        resolve({ projectId: result.insertId });
+                    }
+                })
+        }));
+        for (var job of jobs) {
+            console.log(`saving job with price ${job.price} for project ${title}`);
+            promises.push(new Promise((resolve, reject) => {
+                this.pool.execute(
+                    'INSERT INTO `api-demo`.`job` (`creationDate`,`price`,`status`) VALUES (now(), ?, ?);',
+                    [job.price, 1],
+                    function (error, result, fields) {
+                        if (error) {
+                            console.log(error);
+                            reject(error);
+                        } else {
+                            resolve({ jobId: result.insertId });
+                        }
+                    })
+            }));
+        }
+        Promise.all(promises).then((values) => {
+            var jobIds = _.pluck(values, 'jobId');
+            var assignments = [];
+            var projectId = _.filter(values, function(elem){ return !_.isUndefined(elem.projectId); })[0].projectId;
+            for (var jobId of _.compact(jobIds)) {
+                assignments.push(new Promise((resolve, reject) => {
+                    console.log(projectId)
+                    this.pool.execute(
+                        'INSERT INTO `api-demo`.`assignment` (`projectId`, `jobId`) VALUES (?, ?);',
+                        [projectId, jobId],
+                        function (error, result, fields) {
+                            if (error) {
+                                console.log(error);
+                                reject(error);
+                            } else {
+                                resolve('ok');
+                            }
+                        })
+                }));
+            }
+            Promise.all(promises).then((assignmentValues) => {
+                onResult(projectId);
+            });
+        });
+
     }
 
 }

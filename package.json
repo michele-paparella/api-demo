@@ -8,7 +8,9 @@
   "dependencies": {
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "joi": "^17.4.2",
     "mysql2": "^2.3.0",
-    "node-mysql2": "^1.0.0"
+    "node-mysql2": "^1.0.0",
+    "underscore": "^1.13.1"
   }
 }

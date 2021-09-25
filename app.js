@@ -1,7 +1,7 @@
 var express = require('express');
 const path = require('path');
 
-var jobsRouter = require('./routes/jobs');
+var apiRouter = require('./routes/api-router');
 
 var app = express();
 
@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/jobs', jobsRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
