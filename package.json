@@ -8,6 +8,7 @@
   "dependencies": {
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "mysql2": "^2.3.0",
     "node-mysql2": "^1.0.0"
   }
 }
