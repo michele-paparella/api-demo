@@ -5,7 +5,6 @@ const Joi = require('joi');
 
 const projectsSchema = Joi.object({
   title: Joi.string()
-    .alphanum()
     .min(1)
     .max(30)
     .required(),
