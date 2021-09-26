@@ -1,0 +1,46 @@
+version: "3.2"
+services:
+  nodejs:
+    build: 
+      context: .
+    image: michelepaparella/api-demo
+    networks:
+      - frontend
+      - backend
+    environment:
+      - MYSQL_HOST=localhost
+      - MYSQL_USER=root
+      - MYSQL_PASS=password
+      - MYSQL_DB=api-demo
+    volumes:
+      - ./www/:/var/www/html/
+    ports:
+      - "30001:8005"
+    container_name: api-demo
+  mysql:
+    image: mysql:5.7
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password 
+      - MYSQL_DATABASE=api-demo
+    container_name: api-demo
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    depends_on:
+      - mysql
+    networks:
+      - backend
+    ports:
+      - "30002:80"
+    environment:
+      - PMA_HOST=api-demo
+      - PMA_PORT= 3306
+    volumes:
+      - /sessions
+    container_name: api-demo
+networks:
+  frontend:
+  backend:

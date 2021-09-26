@@ -9,7 +9,7 @@ CREATE TABLE `project` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `job` (
   `id` int NOT NULL AUTO_INCREMENT,
   `creationDate` datetime NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE `job` (
   PRIMARY KEY (`id`),
   KEY `statusFK_idx` (`status`),
   CONSTRAINT `statusFK` FOREIGN KEY (`status`) REFERENCES `status` (`idstatus`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `assignment` (
   `projectId` int NOT NULL,
   `jobId` int NOT NULL,
