@@ -115,11 +115,13 @@ class MySQLDao {
     /**
      * ottenere tutti i job
      */
-    getJobs(status, onResult, onError) {
+    getJobs(status, orderByCreationDate, onResult, onError) {
         // For pool initialization, see above
         if (_.isUndefined(status)) {
-            this.pool.query('SELECT * FROM job', function (err, rows, fields) {
+            var orderByDate = orderByCreationDate ? ' ORDER BY creationDate ' + orderByCreationDate : '';
+            this.pool.query('SELECT * FROM job ' + orderByDate, function (err, rows, fields) {
                 if (err) {
+                    console.error(err);
                     onError(err);
                 } else {
                     onResult(rows, fields);
@@ -130,13 +132,13 @@ class MySQLDao {
                 [status],
                 function (err, rows, fields) {
                     if (err) {
+                        console.error(err);
                         onError(err);
                     } else {
                         onResult(rows, fields);
                     }
                 });
         }
-
     }
 
     /**

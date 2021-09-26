@@ -39,13 +39,15 @@ class Facade {
 
     /**
      * ottenere tutti i job
+     * ottenere tutti i job con uno status specifico
+     * ottenere tutti i job ordinati per creationDate, asc oppure desc
      * @param {*} status 
      * @param {*} onResult 
      * @param {*} onError
      */
-    getJobs(status, onResult, onError) {
+    getJobs(status, orderByCreationDate, onResult, onError) {
         // For pool initialization, see above
-        new MySQLDao().getJobs(status, onResult, onError);
+        new MySQLDao().getJobs(status, orderByCreationDate, onResult, onError);
     }
 
     /**
@@ -55,7 +57,7 @@ class Facade {
      * @param {*} onResult 
      * @param {*} onError
      */
-     changeJobStatus(id, status, onResult, onError) {
+    changeJobStatus(id, status, onResult, onError) {
         // For pool initialization, see above
         new MySQLDao().changeJobStatus(id, status, onResult, onError);
     }

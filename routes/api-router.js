@@ -23,10 +23,6 @@ const insertNewJobIntoProjectSchema = Joi.object({
   })
 });
 
-const updateJobStatusSchema = Joi.object({
-  status: Joi.string().valid('in preparation', 'in progress', 'delivered', 'cancelled')
-});
-
 /**
  * creare un project che contenga un array di job (almeno uno al momento della creazione)
  */
@@ -142,32 +138,26 @@ router.get('/projects/', function (req, res, next) {
 /**
  * ottenere tutti i job
  * ottenere tutti i job con uno status specifico
+ * ottenere tutti i job ordinati per creationDate, asc oppure desc
  */
 router.get('/jobs', function (req, res, next) {
   //TODO crete connection pool only once
-  var status = req.query.status;
-  console.log(req.query.status)
-  const { error } = updateJobStatusSchema.validate({
-    'status': status
-  });
-  if (error) {
-    if (_.isEmpty(status)) {
-      //ottenere tutti i job
-      new Facade().getJobs(undefined, function (rows, fields) {
-        res.send(rows);
-      }, function (error) {
-        res.send({ error: `Error while getting jobs: ${error}` });
-      })
-    } else {
-      res.send({ error: `Please check your parameters` });
-    }
+  var status = undefined;
+  var orderBy = undefined;
+  if (_.contains(['in preparation', 'in progress', 'delivered', 'cancelled'], req.query.status)) {
+    status = req.query.status
+  } else if (req.query.orderBy && (req.query.orderBy === 'asc' || req.query.orderBy === 'desc')) {
+    orderBy = req.query.orderBy;
+  }
+  if ((req.query.status || req.query.orderBy) && _.isUndefined(status) && _.isUndefined(orderBy)) {
+    res.send({ error: `Please check your parameters` });
   } else {
-    //ottenere tutti i job con uno status specifico
-    new Facade().getJobs(status, function (rows, fields) {
+    //ottenere tutti i job
+    new Facade().getJobs(status, orderBy, function (rows, fields) {
       res.send(rows);
     }, function (error) {
       res.send({ error: `Error while getting jobs: ${error}` });
-    })
+    });
   }
 });
 
