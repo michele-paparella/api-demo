@@ -4,10 +4,12 @@ var _ = require('underscore');
 
 class MySQLDao {
 
+    static instance;
     pool;
 
     constructor() {
         // Create the connection pool. The pool-specific settings are the defaults
+        console.log('Creating connection pool...')
         this.pool = mysql.createPool({
             host: 'localhost',
             user: 'root',
@@ -17,6 +19,13 @@ class MySQLDao {
             connectionLimit: 10,
             queueLimit: 0
         });
+    }
+
+    static getInstance() {
+        if (!this.instance){
+            this.instance = new MySQLDao();
+        }
+        return this.instance;
     }
 
     executeStatement(statement, params, returnField, rowsField) {

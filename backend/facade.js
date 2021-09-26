@@ -5,6 +5,14 @@ const { MySQLDao } = require("./mysql/mysql-dao");
 
 class Facade {
 
+    static instance;
+
+    static getInstance(){
+        if (!this.instance){
+            this.instance = new Facade();
+        }
+        return this.instance;
+    }
     /**
      * creare un project che contenga un array di job (almeno uno al momento della creazione)
      * @param {*} title 
@@ -13,7 +21,7 @@ class Facade {
      * @param {*} onError
      */
     insertNewProject(title, jobs, onResult, onError) {
-        new MySQLDao().insertNewProject(title, jobs, onResult, onError);
+        MySQLDao.getInstance().insertNewProject(title, jobs, onResult, onError);
     }
 
     /**
@@ -24,7 +32,7 @@ class Facade {
      * @param {*} onError
      */
     insertNewJobIntoProject(projectId, job, onResult, onError) {
-        new MySQLDao().insertNewJobIntoProject(projectId, job, onResult, onError);
+        MySQLDao.getInstance().insertNewJobIntoProject(projectId, job, onResult, onError);
     }
 
     /**
@@ -34,7 +42,7 @@ class Facade {
      * @param {*} onError
      */
     getProject(id, onResult, onError) {
-        new MySQLDao().getProject(id, onResult, onError);
+        MySQLDao.getInstance().getProject(id, onResult, onError);
     }
 
     /**
@@ -47,7 +55,7 @@ class Facade {
      */
     getJobs(status, orderByCreationDate, onResult, onError) {
         // For pool initialization, see above
-        new MySQLDao().getJobs(status, orderByCreationDate, onResult, onError);
+        MySQLDao.getInstance().getJobs(status, orderByCreationDate, onResult, onError);
     }
 
     /**
@@ -59,7 +67,7 @@ class Facade {
      */
     changeJobStatus(id, status, onResult, onError) {
         // For pool initialization, see above
-        new MySQLDao().changeJobStatus(id, status, onResult, onError);
+        MySQLDao.getInstance().changeJobStatus(id, status, onResult, onError);
     }
 
 

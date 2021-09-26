@@ -32,7 +32,7 @@ router.post('/project/new', function (req, res, next) {
     res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
   } else {
     console.log(`Request is good, saving the project ${req.body.title}`);
-    new Facade().insertNewProject(req.body.title, req.body.jobs, function (id) {
+    Facade.getInstance().insertNewProject(req.body.title, req.body.jobs, function (id) {
       res.send(`Project ${req.body.title} has been saved with id ${id}.`);
     }, function (error) {
       res.status(400).send({ error: `Error while saving project: ${error}` });
@@ -50,7 +50,7 @@ router.post('/job/new', function (req, res, next) {
     res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
   } else {
     console.log(`Request is good, saving the job with price ${req.body.job.price}`);
-    new Facade().insertNewJobIntoProject(req.body.projectId, req.body.job, function (id) {
+    Facade.getInstance().insertNewJobIntoProject(req.body.projectId, req.body.job, function (id) {
       res.send(`Job has been saved with id ${id}.`);
     },
       function (error) {
@@ -69,7 +69,7 @@ router.get('/project/:id', function (req, res, next) {
     res.status(400).send({ error: 'Please check your parameter' });
   } else {
     //getting project by id
-    new Facade().getProject(id, function (rows, fields) {
+    Facade.getInstance().getProject(id, function (rows, fields) {
       if (_.isEmpty(rows)) {
         res.send({});
       } else {
@@ -99,7 +99,7 @@ router.get('/project/:id', function (req, res, next) {
  */
 router.get('/projects/', function (req, res, next) {
   //TODO crete connection pool only once
-  new Facade().getProject(undefined, function (rows, fields) {
+  Facade.getInstance().getProject(undefined, function (rows, fields) {
     if (_.isEmpty(rows)) {
       res.send({});
     } else {
@@ -152,7 +152,7 @@ router.get('/jobs', function (req, res, next) {
     res.status(400).send({ error: `Please check your parameters` });
   } else {
     //ottenere tutti i job
-    new Facade().getJobs(status, orderBy, function (rows, fields) {
+    Facade.getInstance().getJobs(status, orderBy, function (rows, fields) {
       res.send(rows);
     }, function (error) {
       res.status(400).send({ error: `Error while getting jobs: ${error}` });
@@ -173,7 +173,7 @@ router.put('/job/:id', function (req, res, next) {
     if (error) {
       res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
     } else {
-      new Facade().changeJobStatus(id, req.body.status, function (id) {
+      Facade.getInstance().changeJobStatus(id, req.body.status, function (id) {
         res.send(`Job has been successfully updated.`);
       },
         function (error) {
