@@ -40,7 +40,8 @@ class MySQLDao {
      */
     insertNewProject(title, jobs, onResult, onError) {
         var promises = [];
-        promises.push(this.executeStatement('INSERT INTO `project`(`title`) VALUES (?);', [title], 'projectId'));
+        var self = this;
+        promises.push(this.executeStatement('INSERT INTO `project`(`title`) VALUES (?);', [title], 'projectId', 'insertId'));
         for (var job of jobs) {
             console.log(`saving job with price ${job.price} for project ${title}`);
             promises.push(this.executeStatement('INSERT INTO `job` (`creationDate`,`price`,`status`) VALUES (now(), ?, ?);', [job.price, 1], 'jobId', 'insertId'));
@@ -50,7 +51,7 @@ class MySQLDao {
             var assignments = [];
             var projectId = _.filter(values, function (elem) { return !_.isUndefined(elem.projectId); })[0].projectId;
             for (var jobId of _.compact(jobIds)) {
-                assignments.push(this.executeStatement('INSERT INTO `assignment` (`projectId`, `jobId`) VALUES (?, ?);', [projectId, jobId], 'assignmentId', 'insertId'));
+                assignments.push(self.executeStatement('INSERT INTO `assignment` (`projectId`, `jobId`) VALUES (?, ?);', [projectId, jobId], 'assignmentId', 'insertId'));
             }
             Promise.all(assignments).then((assignmentValues) => {
                 onResult(projectId);

@@ -7,7 +7,6 @@ var _ = require('underscore');
 const insertNewProjectSchema = Joi.object({
   title: Joi.string()
     .min(1)
-    .max(30)
     .required(),
   jobs: Joi.array().items(
     Joi.object({
@@ -36,7 +35,7 @@ router.post('/project/new', function (req, res, next) {
     new Facade().insertNewProject(req.body.title, req.body.jobs, function (id) {
       res.send(`Project ${req.body.title} has been saved with id ${id}.`);
     }, function (error) {
-      res.send({ error: `Error while saving project: ${error}` });
+      res.status(400).send({ error: `Error while saving project: ${error}` });
     });
   }
 });
@@ -55,7 +54,7 @@ router.post('/job/new', function (req, res, next) {
       res.send(`Job has been saved with id ${id}.`);
     },
       function (error) {
-        res.send({ error: `Error while saving job: ${error}` });
+        res.status(400).send({ error: `Error while saving job: ${error}` });
       });
   }
 });
@@ -67,7 +66,7 @@ router.get('/project/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
   if (_.isNaN(id) || _.isUndefined(id)) {
-    res.send({ error: 'Please check your parameter' });
+    res.status(400).send({ error: 'Please check your parameter' });
   } else {
     //getting project by id
     new Facade().getProject(id, function (rows, fields) {
@@ -90,7 +89,7 @@ router.get('/project/:id', function (req, res, next) {
         res.send(result);
       }
     }, function (error) {
-      res.send({ error: `Error while getting project: ${error}` });
+      res.status(400).send({ error: `Error while getting project: ${error}` });
     });
   }
 });
@@ -131,7 +130,7 @@ router.get('/projects/', function (req, res, next) {
       }));
     }
   }, function (error) {
-    res.send({ error: `Error while getting projects: ${error}` });
+    res.status(400).send({ error: `Error while getting projects: ${error}` });
   });
 });
 
@@ -150,13 +149,13 @@ router.get('/jobs', function (req, res, next) {
     orderBy = req.query.orderBy;
   }
   if ((req.query.status || req.query.orderBy) && _.isUndefined(status) && _.isUndefined(orderBy)) {
-    res.send({ error: `Please check your parameters` });
+    res.status(400).send({ error: `Please check your parameters` });
   } else {
     //ottenere tutti i job
     new Facade().getJobs(status, orderBy, function (rows, fields) {
       res.send(rows);
     }, function (error) {
-      res.send({ error: `Error while getting jobs: ${error}` });
+      res.status(400).send({ error: `Error while getting jobs: ${error}` });
     });
   }
 });
@@ -168,7 +167,7 @@ router.put('/job/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
   if (_.isNaN(id) || _.isUndefined(id)) {
-    res.send({ error: 'Please check your parameter' });
+    res.status(400).send({ error: 'Please check your parameter' });
   } else {
     const { error } = updateJobStatusSchema.validate(req.body);
     if (error) {
@@ -178,7 +177,7 @@ router.put('/job/:id', function (req, res, next) {
         res.send(`Job has been successfully updated.`);
       },
         function (error) {
-          res.send({ error: `Error while updating job: ${error}` });
+          res.status(400).send({ error: `Error while updating job: ${error}` });
         });
     }
   }
@@ -188,7 +187,7 @@ router.put('/job/:id', function (req, res, next) {
  * ottenere un project da ID (con relativi job)
  */
 router.get('/*', function (req, res, next) {
-  res.send({ error: 'Wrong API call: please check our documentation' });
+  res.status(400).send({ error: 'Wrong API call: please check our documentation' });
 });
 
 module.exports = router;
