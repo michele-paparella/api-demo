@@ -23,6 +23,10 @@ const insertNewJobIntoProjectSchema = Joi.object({
   })
 });
 
+const updateJobStatusSchema = Joi.object({
+  status: Joi.string().valid('in preparation', 'in progress', 'delivered', 'cancelled')
+});
+
 /**
  * creare un project che contenga un array di job (almeno uno al momento della creazione)
  */
@@ -66,7 +70,6 @@ router.post('/job/new', function (req, res, next) {
 router.get('/project/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
-  console.log(id)
   if (_.isNaN(id) || _.isUndefined(id)) {
     res.send({ error: 'Please check your parameter' });
   } else {
@@ -146,6 +149,29 @@ router.get('/jobs', function (req, res, next) {
   }, function (error) {
     res.send({ error: `Error while getting project: ${error}` });
   })
+});
+
+/**
+ * modificare lo status di un job da ID
+ */
+ router.put('/job/:id', function (req, res, next) {
+  //TODO crete connection pool only once
+  var id = req.params.id;
+  if (_.isNaN(id) || _.isUndefined(id)) {
+    res.send({ error: 'Please check your parameter' });
+  } else {
+    const { error } = updateJobStatusSchema.validate(req.body);
+    if (error) {
+      res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+    } else {
+      new Facade().changeJobStatus(id, req.body.status, function (id) {
+        res.send(`Job has been successfully updated.`);
+      },
+        function (error) {
+          res.send({ error: `Error while updating job: ${error}` });
+        });
+    }
+  } 
 });
 
 /**

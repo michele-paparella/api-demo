@@ -7,6 +7,8 @@ class Facade {
 
     /**
      * creare un project che contenga un array di job (almeno uno al momento della creazione)
+     * @param {*} title 
+     * @param {*} jobs 
      * @param {*} onResult 
      * @param {*} onError
      */
@@ -16,6 +18,8 @@ class Facade {
 
     /**
      * aggiungere un job ad un project esistente
+     * @param {*} projectId 
+     * @param {*} job 
      * @param {*} onResult 
      * @param {*} onError
      */
@@ -25,6 +29,7 @@ class Facade {
 
     /**
      * ottenere un project da ID (con relativi job)
+     * @param {*} id 
      * @param {*} onResult 
      * @param {*} onError
      */
@@ -41,6 +46,19 @@ class Facade {
         // For pool initialization, see above
         new MySQLDao().getJobs(onResult, onError);
     }
+
+    /**
+     * modificare lo status di un job da ID
+     * @param {*} id 
+     * @param {*} status 
+     * @param {*} onResult 
+     * @param {*} onError
+     */
+     changeJobStatus(id, status, onResult, onError) {
+        // For pool initialization, see above
+        new MySQLDao().changeJobStatus(id, status, onResult, onError);
+    }
+
 
 }
 
