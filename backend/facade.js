@@ -13,8 +13,15 @@ class Facade {
     /**
      * creare un project che contenga un array di job (almeno uno al momento della creazione)
      */
-    insertNewProject(title, jobs, onResult) {
-        new MySQLDao().insertNewProject(title, jobs, onResult);
+    insertNewProject(title, jobs, onResult, onError) {
+        new MySQLDao().insertNewProject(title, jobs, onResult, onError);
+    }
+
+    /**
+     * aggiungere un job ad un project esistente
+     */
+    insertNewJobIntoProject(projectId, job, onResult, onError) {
+        new MySQLDao().insertNewJobIntoProject(projectId, job, onResult, onError);
     }
 
 }

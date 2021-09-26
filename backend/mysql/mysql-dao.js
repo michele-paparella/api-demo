@@ -32,12 +32,12 @@ class MySQLDao {
             this.pool.execute(
                 statement,
                 params,
-                function (error, result, fields) {
-                    if (error) {
-                        console.log(error);
-                        reject(error);
+                function(err, rows, fields) {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
                     } else {
-                        resolve({ [returnField]: result.insertId });
+                        resolve({ [returnField]: rows.insertId });
                     }
                 })
         });
@@ -46,7 +46,7 @@ class MySQLDao {
     /**
      * creare un project che contenga un array di job (almeno uno al momento della creazione)
      */
-    insertNewProject(title, jobs, onResult) {
+    insertNewProject(title, jobs, onResult, onError) {
         var promises = [];
         promises.push(this.executeInsert('INSERT INTO `api-demo`.`project`(`title`) VALUES (?);', [title], 'projectId'));
         for (var job of jobs) {
@@ -60,11 +60,36 @@ class MySQLDao {
             for (var jobId of _.compact(jobIds)) {
                 assignments.push(this.executeInsert('INSERT INTO `api-demo`.`assignment` (`projectId`, `jobId`) VALUES (?, ?);', [projectId, jobId], 'assignmentId'));
             }
-            Promise.all(promises).then((assignmentValues) => {
+            Promise.all(assignments).then((assignmentValues) => {
                 onResult(projectId);
+            }).catch((err) => {
+                onError(err);
             });
+        }).catch((err) => {
+            onError(err);
         });
+    }
 
+
+    /**
+     * aggiungere un job ad un project esistente
+     */
+    insertNewJobIntoProject(projectId, job, onResult, onError) {
+        var promises = [];
+        console.log(`saving job with price ${job.price} for project with id ${projectId}`);
+        promises.push(this.executeInsert('INSERT INTO `api-demo`.`job` (`creationDate`,`price`,`status`) VALUES (now(), ?, ?);', [job.price, 1], 'jobId'));
+        Promise.all(promises).then((values) => {
+            var jobId = _.compact(_.pluck(values, 'jobId'))[0];
+            var assignments = [];
+            assignments.push(this.executeInsert('INSERT INTO `api-demo`.`assignment` (`projectId`, `jobId`) VALUES (?, ?);', [projectId, jobId], 'assignmentId'));
+            Promise.all(assignments).then((assignmentValues) => {
+                onResult(jobId);
+            }).catch((err) => {
+                onError(err);
+            });
+        }).catch((err) => {
+            onError(err);
+        });
     }
 
 }
