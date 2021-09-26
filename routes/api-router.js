@@ -141,20 +141,40 @@ router.get('/projects/', function (req, res, next) {
 
 /**
  * ottenere tutti i job
+ * ottenere tutti i job con uno status specifico
  */
 router.get('/jobs', function (req, res, next) {
   //TODO crete connection pool only once
-  new Facade().getJobs(function (rows, fields) {
-    res.send(rows);
-  }, function (error) {
-    res.send({ error: `Error while getting project: ${error}` });
-  })
+  var status = req.query.status;
+  console.log(req.query.status)
+  const { error } = updateJobStatusSchema.validate({
+    'status': status
+  });
+  if (error) {
+    if (_.isEmpty(status)) {
+      //ottenere tutti i job
+      new Facade().getJobs(undefined, function (rows, fields) {
+        res.send(rows);
+      }, function (error) {
+        res.send({ error: `Error while getting jobs: ${error}` });
+      })
+    } else {
+      res.send({ error: `Please check your parameters` });
+    }
+  } else {
+    //ottenere tutti i job con uno status specifico
+    new Facade().getJobs(status, function (rows, fields) {
+      res.send(rows);
+    }, function (error) {
+      res.send({ error: `Error while getting jobs: ${error}` });
+    })
+  }
 });
 
 /**
  * modificare lo status di un job da ID
  */
- router.put('/job/:id', function (req, res, next) {
+router.put('/job/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
   if (_.isNaN(id) || _.isUndefined(id)) {
@@ -171,7 +191,7 @@ router.get('/jobs', function (req, res, next) {
           res.send({ error: `Error while updating job: ${error}` });
         });
     }
-  } 
+  }
 });
 
 /**

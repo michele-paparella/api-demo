@@ -93,7 +93,6 @@ class MySQLDao {
             //getting all projects
             this.pool.query('SELECT project.id as projectId, project.title, job.id as jobId, job.creationDate, job.price, status.description FROM job INNER JOIN project INNER JOIN assignment INNER JOIN status ON assignment.projectId = project.id AND assignment.jobId = job.id AND status.idstatus = job.status order by project.id;',
                 [], function (err, rows, fields) {
-                    // Connection is automatically released when query resolves
                     if (err) {
                         onError(err);
                     } else {
@@ -104,7 +103,6 @@ class MySQLDao {
             //getting project by id
             this.pool.query('SELECT project.id as projectId, project.title, job.id as jobId, job.creationDate, job.price, status.description FROM job INNER JOIN project INNER JOIN assignment INNER JOIN status ON assignment.projectId = project.id AND assignment.jobId = job.id AND project.id = ? AND status.idstatus = job.status order by project.id;',
                 [id], function (err, rows, fields) {
-                    // Connection is automatically released when query resolves
                     if (err) {
                         onError(err);
                     } else {
@@ -117,16 +115,28 @@ class MySQLDao {
     /**
      * ottenere tutti i job
      */
-    getJobs(onResult, onError) {
+    getJobs(status, onResult, onError) {
         // For pool initialization, see above
-        this.pool.query('SELECT * FROM job', function (err, rows, fields) {
-            // Connection is automatically released when query resolves
-            if (err) {
-                onError(err);
-            } else {
-                onResult(rows, fields);
-            }
-        });
+        if (_.isUndefined(status)) {
+            this.pool.query('SELECT * FROM job', function (err, rows, fields) {
+                if (err) {
+                    onError(err);
+                } else {
+                    onResult(rows, fields);
+                }
+            });
+        } else {
+            this.pool.query('SELECT job.id, job.creationDate, job.price, status.description FROM job INNER JOIN status where status.description = ? AND status.idstatus = job.status;',
+                [status],
+                function (err, rows, fields) {
+                    if (err) {
+                        onError(err);
+                    } else {
+                        onResult(rows, fields);
+                    }
+                });
+        }
+
     }
 
     /**
@@ -141,12 +151,11 @@ class MySQLDao {
         this.pool.query('SELECT idstatus FROM status where description = ?',
             [status],
             function (err, rows, fields) {
-                // Connection is automatically released when query resolves
                 if (err) {
                     onError(err);
                 } else {
                     self.executeStatement('UPDATE `job` SET `status` = ? WHERE `id` = ?;', [rows[0].idstatus, id], 'affectedRows', 'affectedRows').then((result) => {
-                        if (result.affectedRows === 1){
+                        if (result.affectedRows === 1) {
                             onResult(result.affectedRows);
                         } else {
                             onError(`No job found with id ${id}`);

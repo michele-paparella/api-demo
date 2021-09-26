@@ -33,18 +33,19 @@ class Facade {
      * @param {*} onResult 
      * @param {*} onError
      */
-    getProject(id = undefined, onResult, onError) {
+    getProject(id, onResult, onError) {
         new MySQLDao().getProject(id, onResult, onError);
     }
 
     /**
      * ottenere tutti i job
+     * @param {*} status 
      * @param {*} onResult 
      * @param {*} onError
      */
-    getJobs(onResult, onError) {
+    getJobs(status, onResult, onError) {
         // For pool initialization, see above
-        new MySQLDao().getJobs(onResult, onError);
+        new MySQLDao().getJobs(status, onResult, onError);
     }
 
     /**
