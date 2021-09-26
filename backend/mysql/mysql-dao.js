@@ -89,15 +89,30 @@ class MySQLDao {
      */
     getProject(id, onResult, onError) {
         // For pool initialization, see above
-        this.pool.query("SELECT project.id as projectId ,project.title, job.id as jobId, job.creationDate, job.price, status.description FROM `api-demo`.job INNER JOIN `api-demo`.project INNER JOIN `api-demo`.assignment INNER JOIN `api-demo`.status ON assignment.projectId = project.id AND assignment.jobId = job.id AND project.id = ? AND status.idstatus = job.status;",
-            [id], function (err, rows, fields) {
-                // Connection is automatically released when query resolves
-                if (err){
-                    onError(err);
-                } else {
-                    onResult(rows, fields);
-                }
-            });
+        if (_.isUndefined(id)) {
+            //getting all projects
+            console.log('getting all projects');
+            this.pool.query("SELECT project.id as projectId, project.title, job.id as jobId, job.creationDate, job.price, status.description FROM `api-demo`.job INNER JOIN `api-demo`.project INNER JOIN `api-demo`.assignment INNER JOIN `api-demo`.status ON assignment.projectId = project.id AND assignment.jobId = job.id AND status.idstatus = job.status order by project.id;",
+                [], function (err, rows, fields) {
+                    // Connection is automatically released when query resolves
+                    if (err) {
+                        onError(err);
+                    } else {
+                        onResult(rows, fields);
+                    }
+                });
+        } else {
+            //getting project by id
+            this.pool.query("SELECT project.id as projectId, project.title, job.id as jobId, job.creationDate, job.price, status.description FROM `api-demo`.job INNER JOIN `api-demo`.project INNER JOIN `api-demo`.assignment INNER JOIN `api-demo`.status ON assignment.projectId = project.id AND assignment.jobId = job.id AND project.id = ? AND status.idstatus = job.status order by project.id;",
+                [id], function (err, rows, fields) {
+                    // Connection is automatically released when query resolves
+                    if (err) {
+                        onError(err);
+                    } else {
+                        onResult(rows, fields);
+                    }
+                });
+        }
     }
 
     /**
@@ -107,7 +122,7 @@ class MySQLDao {
         // For pool initialization, see above
         this.pool.query("SELECT * FROM job", function (err, rows, fields) {
             // Connection is automatically released when query resolves
-            if (err){
+            if (err) {
                 onError(err);
             } else {
                 onResult(rows, fields);
