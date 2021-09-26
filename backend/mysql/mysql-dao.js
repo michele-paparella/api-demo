@@ -19,20 +19,12 @@ class MySQLDao {
         });
     }
 
-    loadJobs(onResult) {
-        // For pool initialization, see above
-        this.pool.query("SELECT * FROM job", function (err, rows, fields) {
-            // Connection is automatically released when query resolves
-            onResult(rows, fields);
-        });
-    }
-
     executeInsert(statement, params, returnField) {
         return new Promise((resolve, reject) => {
             this.pool.execute(
                 statement,
                 params,
-                function(err, rows, fields) {
+                function (err, rows, fields) {
                     if (err) {
                         console.error(err);
                         reject(err);
@@ -89,6 +81,37 @@ class MySQLDao {
             });
         }).catch((err) => {
             onError(err);
+        });
+    }
+
+    /**
+     * ottenere un project da ID (con relativi job)
+     */
+    getProject(id, onResult, onError) {
+        // For pool initialization, see above
+        this.pool.query("SELECT project.id as projectId ,project.title, job.id as jobId, job.creationDate, job.price, status.description FROM `api-demo`.job INNER JOIN `api-demo`.project INNER JOIN `api-demo`.assignment INNER JOIN `api-demo`.status ON assignment.projectId = project.id AND assignment.jobId = job.id AND project.id = ? AND status.idstatus = job.status;",
+            [id], function (err, rows, fields) {
+                // Connection is automatically released when query resolves
+                if (err){
+                    onError(err);
+                } else {
+                    onResult(rows, fields);
+                }
+            });
+    }
+
+    /**
+     * ottenere tutti i job
+     */
+    getJobs(onResult, onError) {
+        // For pool initialization, see above
+        this.pool.query("SELECT * FROM job", function (err, rows, fields) {
+            // Connection is automatically released when query resolves
+            if (err){
+                onError(err);
+            } else {
+                onResult(rows, fields);
+            }
         });
     }
 

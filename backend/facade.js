@@ -5,11 +5,6 @@ const { MySQLDao } = require("./mysql/mysql-dao");
 
 class Facade {
 
-    loadJobs(onResult) {
-        // For pool initialization, see above
-        new MySQLDao().loadJobs(onResult);
-    }
-
     /**
      * creare un project che contenga un array di job (almeno uno al momento della creazione)
      */
@@ -22,6 +17,21 @@ class Facade {
      */
     insertNewJobIntoProject(projectId, job, onResult, onError) {
         new MySQLDao().insertNewJobIntoProject(projectId, job, onResult, onError);
+    }
+
+    /**
+     * ottenere un project da ID (con relativi job)
+     */
+    getProject(id, onResult, onError) {
+        new MySQLDao().getProject(id, onResult, onError);
+    }
+
+    /**
+     * ottenere tutti i job
+     */
+    getJobs(onResult, onError) {
+        // For pool initialization, see above
+        new MySQLDao().getJobs(onResult, onError);
     }
 
 }

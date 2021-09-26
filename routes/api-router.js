@@ -22,15 +22,6 @@ const insertNewJobIntoProjectSchema = Joi.object({
   })
 });
 
-/* GET jobs listing. */
-router.get('/jobs', function (req, res, next) {
-  //TODO crete connection pool only once
-  new Facade().loadJobs(function (rows, fields) {
-    res.send(rows);
-  }
-  );
-});
-
 /**
  * creare un project che contenga un array di job (almeno uno al momento della creazione)
  */
@@ -58,7 +49,7 @@ router.post('/job/new', function (req, res, next) {
   if (error) {
     res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
   } else {
-    console.log(`Request is good, saving the project ${req.body.title}`);
+    console.log(`Request is good, saving the job with price ${req.body.job.price}`);
     new Facade().insertNewJobIntoProject(req.body.projectId, req.body.job, function (id) {
       res.send(`Job has been saved with id ${id}.`);
     },
@@ -66,6 +57,46 @@ router.post('/job/new', function (req, res, next) {
         res.send(`Error while saving job: ${error}`);
       });
   }
+});
+
+/**
+ * ottenere un project da ID (con relativi job)
+ */
+router.get('/project/:id', function (req, res, next) {
+  //TODO crete connection pool only once
+  var id = req.params.id;
+  new Facade().getProject(id, function (rows, fields) {
+    var result = {
+      project: {
+        id: rows[0].projectId,
+        title: rows[0].title
+      },
+      jobs: []
+    };
+    for (var job of rows){
+      result.jobs.push({
+        id: job.jobId,
+        creationDate: job.creationDate,
+        price: job.price,
+        status: job.description
+      });
+    }
+    res.send(result);
+  }, function (error) {
+    res.send(`Error while getting project: ${error}`);
+  })
+});
+
+/**
+ * ottenere tutti i job
+ */
+router.get('/jobs', function (req, res, next) {
+  //TODO crete connection pool only once
+  new Facade().getJobs(function (rows, fields) {
+    res.send(rows);
+  }, function (error) {
+    res.send(`Error while getting project: ${error}`);
+  })
 });
 
 module.exports = router;
