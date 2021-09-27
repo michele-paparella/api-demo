@@ -15,11 +15,9 @@ services:
   
   mysql_server:
     image: mysql:8.0
-    command: --init-file /database_dump/db_init.sql
     volumes:
-        - ./db_init.sql:/database_dump/db_init.sql
+    - ./database:/tmp/database
+    command: mysqld --init-file="/tmp/database/install_db.sql"
     environment: 
       - MYSQL_DATABASE=api-demo
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
