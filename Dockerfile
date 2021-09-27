@@ -1,12 +1,15 @@
-FROM node:8
+FROM node:14
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json .
 
 RUN npm install
 
 COPY . .
 
-EXPOSE 8005 
-CMD [ "npm", "start" ]
+EXPOSE 3000
+
+VOLUME [ "/app/node_modules" ]
+
+CMD ["npm", "run", "dev"]
