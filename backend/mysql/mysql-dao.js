@@ -11,7 +11,7 @@ class MySQLDao {
         // Create the connection pool. The pool-specific settings are the defaults
         console.log('Creating connection pool...')
         this.pool = mysql.createPool({
-            host: 'mysql_server',
+            host: process.env.DB_HOST,
             user: 'root',
             database: 'api-demo',
             password: 'password',
@@ -129,7 +129,7 @@ class MySQLDao {
         // For pool initialization, see above
         if (_.isUndefined(status)) {
             var orderByDate = orderByCreationDate ? ' ORDER BY creationDate ' + orderByCreationDate : '';
-            this.pool.query('SELECT * FROM job ' + orderByDate, function (err, rows, fields) {
+            this.pool.query('SELECT job.id, job.creationDate, job.price, status.description as status FROM job INNER JOIN status where job.status = status.idstatus ' + orderByDate, function (err, rows, fields) {
                 if (err) {
                     console.error(err);
                     onError(err);
