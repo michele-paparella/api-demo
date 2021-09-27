@@ -22,6 +22,15 @@ const insertNewJobIntoProjectSchema = Joi.object({
   })
 });
 
+const updateJobStatusSchema = Joi.object({
+  status: Joi.string().valid('in preparation', 'in progress', 'delivered', 'cancelled')
+});
+
+const returnError = function (res, message) {
+  console.error(message);
+  res.status(400).send({ error: message });
+}
+
 /**
  * creare un project che contenga un array di job (almeno uno al momento della creazione)
  */
@@ -29,13 +38,13 @@ router.post('/project/new', function (req, res, next) {
   //TODO crete connection pool only once
   const { error } = insertNewProjectSchema.validate(req.body);
   if (error) {
-    res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+    returnError(res, `Validation error: ${error.details.map(x => x.message).join(', ')}`);
   } else {
     console.log(`Request is good, saving the project ${req.body.title}`);
     Facade.getInstance().insertNewProject(req.body.title, req.body.jobs, function (id) {
       res.send(`Project ${req.body.title} has been saved with id ${id}.`);
     }, function (error) {
-      res.status(400).send({ error: `Error while saving project: ${error}` });
+      returnError(res, `Error while saving project: ${error}`);
     });
   }
 });
@@ -47,14 +56,14 @@ router.post('/job/new', function (req, res, next) {
   //TODO crete connection pool only once
   const { error } = insertNewJobIntoProjectSchema.validate(req.body);
   if (error) {
-    res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+    returnError(res, `Validation error: ${error.details.map(x => x.message).join(', ')}`);
   } else {
     console.log(`Request is good, saving the job with price ${req.body.job.price}`);
     Facade.getInstance().insertNewJobIntoProject(req.body.projectId, req.body.job, function (id) {
       res.send(`Job has been saved with id ${id}.`);
     },
       function (error) {
-        res.status(400).send({ error: `Error while saving job: ${error}` });
+        returnError(res, `Error while saving job: ${error}`);
       });
   }
 });
@@ -66,7 +75,7 @@ router.get('/project/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
   if (_.isNaN(id) || _.isUndefined(id)) {
-    res.status(400).send({ error: 'Please check your parameter' });
+    returnError(res, 'Please check your parameter');
   } else {
     //getting project by id
     Facade.getInstance().getProject(id, function (rows, fields) {
@@ -89,7 +98,7 @@ router.get('/project/:id', function (req, res, next) {
         res.send(result);
       }
     }, function (error) {
-      res.status(400).send({ error: `Error while getting project: ${error}` });
+      returnError(res, `Error while getting project: ${error}`);
     });
   }
 });
@@ -130,7 +139,7 @@ router.get('/projects/', function (req, res, next) {
       }));
     }
   }, function (error) {
-    res.status(400).send({ error: `Error while getting projects: ${error}` });
+    returnError(res, `Error while getting projects: ${error}`);
   });
 });
 
@@ -149,13 +158,13 @@ router.get('/jobs', function (req, res, next) {
     orderBy = req.query.orderBy;
   }
   if ((req.query.status || req.query.orderBy) && _.isUndefined(status) && _.isUndefined(orderBy)) {
-    res.status(400).send({ error: `Please check your parameters` });
+    returnError(res, `Please check your parameters`);
   } else {
     //ottenere tutti i job
     Facade.getInstance().getJobs(status, orderBy, function (rows, fields) {
       res.send(rows);
     }, function (error) {
-      res.status(400).send({ error: `Error while getting jobs: ${error}` });
+      returnError(res, `Error while getting jobs: ${error}`);
     });
   }
 });
@@ -167,17 +176,17 @@ router.put('/job/:id', function (req, res, next) {
   //TODO crete connection pool only once
   var id = req.params.id;
   if (_.isNaN(id) || _.isUndefined(id)) {
-    res.status(400).send({ error: 'Please check your parameter' });
+    returnError(res, `Please check your parameter`);
   } else {
     const { error } = updateJobStatusSchema.validate(req.body);
     if (error) {
-      res.send(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
+      returnError(res, `Validation error: ${error.details.map(x => x.message).join(', ')}`);
     } else {
       Facade.getInstance().changeJobStatus(id, req.body.status, function (id) {
         res.send(`Job has been successfully updated.`);
       },
         function (error) {
-          res.status(400).send({ error: `Error while updating job: ${error}` });
+          returnError(res, `Error while updating job: ${error}`);
         });
     }
   }
@@ -187,7 +196,7 @@ router.put('/job/:id', function (req, res, next) {
  * ottenere un project da ID (con relativi job)
  */
 router.get('/*', function (req, res, next) {
-  res.status(400).send({ error: 'Wrong API call: please check our documentation' });
+  returnError(res, 'Wrong API call: please check our documentation');
 });
 
 module.exports = router;

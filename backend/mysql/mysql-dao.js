@@ -11,7 +11,7 @@ class MySQLDao {
         // Create the connection pool. The pool-specific settings are the defaults
         console.log('Creating connection pool...')
         this.pool = mysql.createPool({
-            host: 'localhost',
+            host: 'mysql_server',
             user: 'root',
             database: 'api-demo',
             password: 'password',
