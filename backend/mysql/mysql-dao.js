@@ -1,4 +1,3 @@
-// get the client
 const mysql = require('mysql2');
 var _ = require('underscore');
 
@@ -7,6 +6,10 @@ class MySQLDao {
     static instance;
     pool;
 
+    /**
+     * in a dev environment DB_HOST is localhost, while if the app is launched into a docker container
+     * the DB_HOST value is mysql_server
+     */
     constructor() {
         // Create the connection pool. The pool-specific settings are the defaults
         console.log('Creating connection pool...')
@@ -28,6 +31,14 @@ class MySQLDao {
         return this.instance;
     }
 
+    /**
+     * 
+     * @param {*} statement 
+     * @param {*} params 
+     * @param {*} returnField 
+     * @param {*} rowsField 
+     * @returns 
+     */
     executeStatement(statement, params, returnField, rowsField) {
         return new Promise((resolve, reject) => {
             this.pool.execute(
@@ -45,7 +56,11 @@ class MySQLDao {
     }
 
     /**
-     * creare un project che contenga un array di job (almeno uno al momento della creazione)
+     * 
+     * @param {*} title 
+     * @param {*} jobs 
+     * @param {*} onResult 
+     * @param {*} onError 
      */
     insertNewProject(title, jobs, onResult, onError) {
         var promises = [];
@@ -74,7 +89,11 @@ class MySQLDao {
 
 
     /**
-     * aggiungere un job ad un project esistente
+     * 
+     * @param {*} projectId 
+     * @param {*} job 
+     * @param {*} onResult 
+     * @param {*} onError 
      */
     insertNewJobIntoProject(projectId, job, onResult, onError) {
         var promises = [];
@@ -95,10 +114,12 @@ class MySQLDao {
     }
 
     /**
-     * ottenere un project da ID (con relativi job)
+     * 
+     * @param {*} id 
+     * @param {*} onResult 
+     * @param {*} onError 
      */
     getProject(id, onResult, onError) {
-        // For pool initialization, see above
         if (_.isUndefined(id)) {
             //getting all projects
             this.pool.query('SELECT project.id as projectId, project.title, job.id as jobId, job.creationDate, job.price, status.description FROM job INNER JOIN project INNER JOIN assignment INNER JOIN status ON assignment.projectId = project.id AND assignment.jobId = job.id AND status.idstatus = job.status order by project.id;',
@@ -123,10 +144,13 @@ class MySQLDao {
     }
 
     /**
-     * ottenere tutti i job
+     * 
+     * @param {*} status 
+     * @param {*} orderByCreationDate 
+     * @param {*} onResult 
+     * @param {*} onError 
      */
     getJobs(status, orderByCreationDate, onResult, onError) {
-        // For pool initialization, see above
         if (_.isUndefined(status)) {
             var orderByDate = orderByCreationDate ? ' ORDER BY creationDate ' + orderByCreationDate : '';
             this.pool.query('SELECT job.id, job.creationDate, job.price, status.description as status FROM job INNER JOIN status where job.status = status.idstatus ' + orderByDate, function (err, rows, fields) {
@@ -152,7 +176,6 @@ class MySQLDao {
     }
 
     /**
-     * modificare lo status di un job da ID
      * @param {*} id 
      * @param {*} status
      * @param {*} onResult 
