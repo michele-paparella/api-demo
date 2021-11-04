@@ -10,7 +10,7 @@ A demo project that shows how to implement a backend service with Node.js and My
 
 ## Tech
 
-Dillinger uses a number of open source projects to work properly:
+Api Demo uses a number of open source projects to work properly:
 
 - [Node.js](https://nodejs.org/) - HTML enhanced for web apps!
 - [MySQL](https://www.mysql.com/) - an open-source relational database management system (RDBMS)
