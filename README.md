@@ -40,14 +40,14 @@ npm run dev
 The main REST API of Api Demo are shown below.
 description | URI | method | body | body/query string allowed values | output | 
 --- | --- | --- | --- | --- | --- |
-Project creation | /api/project/new | POST | { "title": <projectTitle>, "jobs": [{"price": <price>}] } | _projectTitle_: not empty string; _price_: number | { "result": <id> }
-Job creation | /api/job/new | POST | { "projectId": <projectId>, "job": {"price":<price>} } | _projectId_: project id; _price_: number| { "result": <id> }
-Get project by id | /api/project/<id> | GET |  | _id_: project id| {    "result": {        "id":<projectId>,        "title": <projectTitle>,        "jobs": [            {                "id": <jobId>,           "creationDate": <creationDate>,                "price": <jobPrice>,                "status": <jobStatus>            }   ] } }
-Get all projects | /api/projects | GET |  |  | {    "result": {        "id":<projectId>,        "title": <projectTitle>,        "jobs": [            {                "id": <jobId>,           "creationDate": <creationDate>,                "price": <jobPrice>,                "status": <jobStatus>            }   ] } }
-Get all jobs|/api/jobs | GET |  | | {   "result": [        {            "id": <jobID>,            "creationDate": <creationDate>,"price": <jobPrice>,            "status": <jobStatus>        } ] }
-Change job status | /api/job/<id> | PUT | { "status": _status_ } |  _id_: job id; _status_: can be one of the following values: _in preparation_, _in progress_, _cancelled_, _delivered_ | { "result": '' }
-Get all jobs by status |/api/jobs?status=<status> | GET | _status_: can be one of the following values: _in preparation_, _in progress_, _cancelled_, _delivered_ | {   "result": [        {            "id": <jobID>,            "creationDate": <creationDate>,"price": <jobPrice>,            "status": <jobStatus>        } ] }
-Get all jobs ordered by creation date |/api/jobs?orderBy=<order> | GET | _order_: can be one of the following values: _asc_, _desc_ | {   "result": [        {            "id": <jobID>,            "creationDate": <creationDate>,"price": <jobPrice>,            "status": <jobStatus>        } ] }
+Project creation | /api/project/new | POST | { "title": _projectTitle_, "jobs": [{"price": _price_}] } | _projectTitle_: not empty string; _price_: number | { "result": _id_ }
+Job creation | /api/job/new | POST | { "projectId": _projectId_, "job": {"price":_price_} } | _projectId_: project id; _price_: number| { "result": _id_ }
+Get project by id | /api/project/_id_ | GET |  | _id_: project id| {    "result": {        "id":_projectId_,        "title": _projectTitle_,        "jobs": [            {                "id": _jobId_,           "creationDate": _creationDate_,                "price": _jobPrice_,                "status": _jobStatus_            }   ] } }
+Get all projects | /api/projects | GET |  |  | {    "result": {        "id":_projectId_,        "title": _projectTitle_,        "jobs": [            {                "id": _jobId_,           "creationDate": _creationDate_,                "price": _jobPrice_,                "status": _jobStatus_            }   ] } }
+Get all jobs|/api/jobs | GET |  | | {   "result": [        {            "id": _jobID_,            "creationDate": _creationDate_,"price": _jobPrice_,            "status": _jobStatus_        } ] }
+Change job status | /api/job/_id_ | PUT | { "status": _status_ } |  _id_: job id; _status_: can be one of the following values: _in preparation_, _in progress_, _cancelled_, _delivered_ | { "result": '' }
+Get all jobs by status |/api/jobs?status=_status_ | GET | _status_: can be one of the following values: _in preparation_, _in progress_, _cancelled_, _delivered_ | {   "result": [        {            "id": _jobID_,            "creationDate": _creationDate_,"price": _jobPrice_,            "status": _jobStatus_        } ] }
+Get all jobs ordered by creation date |/api/jobs?orderBy=_order_ | GET | _order_: can be one of the following values: _asc_, _desc_ | {   "result": [        {            "id": _jobID_,            "creationDate": _creationDate_,"price": _jobPrice_,            "status": _jobStatus_        } ] }
 
 
 ## New Project
