@@ -60,7 +60,11 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":1}
+```json
+{
+    "result": 1
+}
+```
 
 ## New Job
 
@@ -83,7 +87,11 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":3}
+```json
+{
+    "result": 3
+}
+```
     
 ## Get Project by id
 
@@ -104,7 +112,34 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":{"id":1,"title":"New Project","jobs":[{"id":1,"creationDate":"2021-11-04T07:51:09.000Z","price":"11","status":"in preparation"},{"id":2,"creationDate":"2021-11-04T07:51:09.000Z","price":"13","status":"in preparation"},{"id":3,"creationDate":"2021-11-04T07:51:29.000Z","price":"57","status":"in preparation"}]}}
+```json
+{
+    "result": {
+        "id": 1,
+        "title": "New Project",
+        "jobs": [
+            {
+                "id": 1,
+                "creationDate": "2021-11-04T07:51:09.000Z",
+                "price": "11",
+                "status": "in preparation"
+            },
+            {
+                "id": 2,
+                "creationDate": "2021-11-04T07:51:09.000Z",
+                "price": "13",
+                "status": "in preparation"
+            },
+            {
+                "id": 3,
+                "creationDate": "2021-11-04T07:51:29.000Z",
+                "price": "57",
+                "status": "in preparation"
+            }
+        ]
+    }
+}
+```    
 
 ## Get all projects
 
@@ -125,7 +160,36 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":[{"projectId":"1","title":"New Project","jobs":[{"id":1,"creationDate":"2021-11-04T07:51:09.000Z","price":"11","status":"in preparation"},{"id":2,"creationDate":"2021-11-04T07:51:09.000Z","price":"13","status":"in preparation"},{"id":3,"creationDate":"2021-11-04T07:51:29.000Z","price":"57","status":"in preparation"}]}]}
+```json
+{
+    "result": [
+        {
+            "projectId": "1",
+            "title": "New Project",
+            "jobs": [
+                {
+                    "id": 1,
+                    "creationDate": "2021-11-04T07:51:09.000Z",
+                    "price": "11",
+                    "status": "in preparation"
+                },
+                {
+                    "id": 2,
+                    "creationDate": "2021-11-04T07:51:09.000Z",
+                    "price": "13",
+                    "status": "in preparation"
+                },
+                {
+                    "id": 3,
+                    "creationDate": "2021-11-04T07:51:29.000Z",
+                    "price": "57",
+                    "status": "in preparation"
+                }
+            ]
+        }
+    ]
+}
+```
     
 ## Get All Jobs
 
@@ -146,7 +210,30 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":[{"id":1,"creationDate":"2021-11-04T07:51:09.000Z","price":"11","status":"in preparation"},{"id":2,"creationDate":"2021-11-04T07:51:09.000Z","price":"13","status":"in preparation"},{"id":3,"creationDate":"2021-11-04T07:51:29.000Z","price":"57","status":"in preparation"}]}
+```json
+{
+    "result": [
+        {
+            "id": 1,
+            "creationDate": "2021-11-04T07:51:09.000Z",
+            "price": "11",
+            "status": "in preparation"
+        },
+        {
+            "id": 2,
+            "creationDate": "2021-11-04T07:51:09.000Z",
+            "price": "13",
+            "status": "in preparation"
+        },
+        {
+            "id": 3,
+            "creationDate": "2021-11-04T07:51:29.000Z",
+            "price": "57",
+            "status": "in preparation"
+        }
+    ]
+}
+```
     
 ## Change job status
 
@@ -169,7 +256,11 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":""}
+```json
+{
+    "result": ""
+}
+```
     
 ## Get all jobs by status
 
@@ -190,8 +281,24 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":[{"id":2,"creationDate":"2021-11-04T07:51:09.000Z","price":"13","description":"in preparation"},{"id":3,"creationDate":"2021-11-04T07:51:29.000Z","price":"57","description":"in preparation"}]}
-    
+```json
+{
+    "result": [
+        {
+            "id": 2,
+            "creationDate": "2021-11-04T07:51:09.000Z",
+            "price": "13",
+            "description": "in preparation"
+        },
+        {
+            "id": 3,
+            "creationDate": "2021-11-04T07:51:29.000Z",
+            "price": "57",
+            "description": "in preparation"
+        }
+    ]
+}
+```    
 ## Get all jobs ordered by creation date
 
 ### Request
@@ -211,7 +318,30 @@ The main REST API of Api Demo are shown below.
     Connection: keep-alive
     Keep-Alive: timeout=5
     
-    {"result":[{"id":1,"creationDate":"2021-11-04T07:51:09.000Z","price":"11","status":"delivered"},{"id":2,"creationDate":"2021-11-04T07:51:09.000Z","price":"13","status":"in preparation"},{"id":3,"creationDate":"2021-11-04T07:51:29.000Z","price":"57","status":"in preparation"}]}
+```json
+    {
+    "result": [
+        {
+            "id": 1,
+            "creationDate": "2021-11-04T07:51:09.000Z",
+            "price": "11",
+            "status": "delivered"
+        },
+        {
+            "id": 2,
+            "creationDate": "2021-11-04T07:51:09.000Z",
+            "price": "13",
+            "status": "in preparation"
+        },
+        {
+            "id": 3,
+            "creationDate": "2021-11-04T07:51:29.000Z",
+            "price": "57",
+            "status": "in preparation"
+        }
+    ]
+}
+```
         
 ## Docker
 
@@ -222,30 +352,49 @@ Dockerfile if necessary. When ready, simply use the Dockerfile to
 build the image.
 
 ```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
+cd api-demo
+docker build -t <youruser>/api-demo:${package.json.version} .
+docker network create node-api-demo-network
 ```
 
-This will create the dillinger image and pull in the necessary dependencies.
+This will create the api-demo image and pull in the necessary dependencies.
 Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
+version of api-demo.
 
 Once done, run the Docker image and map the port to whatever you wish on
 your host. In this example, we simply map port 8000 of the host to
 port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
 
 ```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
+docker run \
+        --rm \
+        -d \
+        --name mysql_server \
+        -e MYSQL_DATABASE='api-demo' \
+        -e MYSQL_ROOT_PASSWORD='password' \
+        --network node-api-demo-network \
+        mysql:8.0
+docker run \
+		--rm \
+		--name api-demo \
+		--network node-api-demo-network \
+		-p 3000:3000 \
+		-v $(pwd):/app \
+		<youruser>/api-demo
+docker-compose up
 ```
 
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
+> Note: change `api-demo` is the schema and `password` is the password of the MySQL admin account
 
-Verify the deployment by navigating to your server address in
-your preferred browser.
+Verify the deployment by calling one of the available APIs like /api/project/new (new project creation) .
 
 ```sh
-127.0.0.1:8000
+curl -i -X POST -H "Content-Type: application/json" \
+    -d '{ "title": "New Project", "jobs": [{"price":"11"},{"price":"13"}] }' \
+    http://localhost:3000/api/project/new
 ```
+
+Feel free to submit any feedback on this project! :)
 
 ## License
 
